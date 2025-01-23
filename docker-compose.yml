@@ -1,0 +1,48 @@
+version: '3.3'
+
+services:
+  # core
+  generate-synthetic-data:
+    image: tannous/tannous:generate-synthetic-data-ubuntu.22.04
+    container_name: generate-synthetic-data-core
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    build:
+      context: .
+      args:
+        user: ${user}
+        userid: ${userid}
+        group: ${group}
+        groupid: ${groupid}
+    networks:
+      - internal
+    ports:
+      - ${INET_HTTP_SERVER_PORT}:${INET_HTTP_SERVER_PORT}
+      - ${DJANGO_ADMIN_PORT}:${DJANGO_ADMIN_PORT}
+    env_file: .env
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    volumes:
+      - .:/home/$user/src
+    user: ${user}
+
+  postgres:
+    image: postgres:latest
+    container_name: generate-synthetic-data-postgres
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    networks:
+     - internal
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+networks:
+  internal:
+    driver: bridge 
+
+volumes:
+  postgres_data:
