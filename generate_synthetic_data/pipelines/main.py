@@ -347,18 +347,32 @@ def split_dataset(source, output_dir, train_ratio=0.8):
 
 
 if __name__ == "__main__":
-    target_object = 'hand-luggage'
-    annotation_mode = 'mask'    
-    output_dir = f"/home/appuser/src/output"
+    # target_object = 'hand-luggage'
+    # annotation_mode = 'mask'    
+    # output_dir = f"/home/appuser/src/output"
 
-    main_pipeline(
-        "/home/appuser/src/background",
-        objects_dir="/home/appuser/src/objects",
-        output_dir=output_dir,
-    )
+    # main_pipeline(
+    #     "/home/appuser/src/background",
+    #     objects_dir="/home/appuser/src/objects",
+    #     output_dir=output_dir,
+    # )
     
-    split_dataset(
-        source=output_dir,
-        output_dir='/home/appuser/src/data',
-        train_ratio=0.7,
-    )
+    # split_dataset(
+    #     source=output_dir,
+    #     output_dir='/home/appuser/src/data',
+    #     train_ratio=0.7,
+    # )
+    
+    
+    classes = [
+        {
+            "class": "wood",
+            "class_id": 0,
+            "objects": {
+                "name": "pallet",
+                "paths": [
+                    ""
+                ]
+            }
+        }
+    ]
