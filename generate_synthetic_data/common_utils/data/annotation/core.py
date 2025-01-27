@@ -20,6 +20,24 @@ def load_yolo_segmentation_labels(label_file, image_shape):
 
     return polygons
 
+def load_yolo_boundingbox_labels(label_file, image_shape):
+    """
+    Load YOLO segmentation labels and convert them to pixel polygons.
+    """
+    height, width = image_shape[:2]
+    bbxes = []
+
+    with open(label_file, "r") as file:
+        for line in file:
+            parts = line.strip().split()
+            class_id = int(parts[0])  # Currently unused
+            points = list(map(float, parts[1:]))
+
+            # Convert normalized coordinates to pixel coordinates
+            bbxes.append(points)
+
+    return bbxes
+
 def extract_polygon(mask, threshold_value=10, epsilon_factor=0.01, debug=False):
     """
     Extract the polygon of an object from an image.

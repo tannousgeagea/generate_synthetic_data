@@ -3,6 +3,7 @@ import os
 
 from common_utils.data.annotation.core import (
     load_yolo_segmentation_labels,
+    load_yolo_boundingbox_labels,
     extract_polygon,
 )
 
@@ -35,10 +36,10 @@ def load_image_and_mask(image_path, annotation_dir, image_prefix="rgb", mask_pre
     # Extract the image filename without the prefix
     image_filename = os.path.basename(image_path)
     file_ext = f".{image_filename.split('.')[-1]}"
-    core_filename = image_filename.replace(image_prefix, "").strip(file_ext)
+    core_filename = image_filename.replace(image_prefix, "").strip(file_ext) if annotation_mode=="mask" else image_filename.strip(file_ext)
 
     # Construct the corresponding mask filename
-    annotation_filename = f"{mask_prefix}{core_filename}{file_ext}" if annotation_mode=='mask' else f"{mask_prefix}{core_filename}.txt"
+    annotation_filename = f"{mask_prefix}{core_filename}{file_ext}" if annotation_mode=='mask' else f"{core_filename}.txt"
     annotation_path = os.path.join(annotation_dir, annotation_filename)
     
     if not os.path.exists(annotation_path):
@@ -47,8 +48,10 @@ def load_image_and_mask(image_path, annotation_dir, image_prefix="rgb", mask_pre
     image = cv2.imread(image_path)
     if annotation_mode == 'mask':
         polygons, _ = extract_polygon(cv2.imread(annotation_path, cv2.IMREAD_GRAYSCALE), threshold_value=10 , epsilon_factor=0.01, debug=False)
-    elif annotation_mode == 'txtfile':
-        polygons = load_yolo_segmentation_labels(annotation_filename, image.shape)
+    elif annotation_mode == 'seg':
+        polygons = load_yolo_segmentation_labels(annotation_path, image.shape)
+    elif annotation_mode == 'bbox':
+        polygons = load_yolo_boundingbox_labels(annotation_path, image.shape)
     else:
         raise ValueError(f'undefined annotation mode: {annotation_mode}')
         

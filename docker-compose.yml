@@ -25,6 +25,7 @@ services:
       - postgres
     volumes:
       - .:/home/$user/src
+      - /home/waminion09/WA_Production/services/synthetically_generated_objects:/media/$user/objects
     user: ${user}
 
   postgres:
